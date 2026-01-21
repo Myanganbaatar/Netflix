@@ -15,3 +15,7 @@
   L'idée serait de répliquer les fichiers vidéo sur des serveurs stratégiquement placés au plus près des utilisateurs afin de minimiser la latence et d'offrir un streaming fluide, même en haute définition.
   Enfin, pour garantir une fiabilité maximale, j'intégrerais des mécanismes de tolérance aux pannes comme le "circuit breaker", 
   qui permet de désactiver temporairement un composant défectueux tout en maintenant les fonctions vitales du site, assurant ainsi une expérience utilisateur sans interruption majeure.
+
+La Couche de Présentation
+La Couche Application
+La Couche de Données
