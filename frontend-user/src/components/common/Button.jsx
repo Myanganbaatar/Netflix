@@ -2,9 +2,8 @@ function Button({
   children,
   variant = 'primary',
   size = 'md',
-  onClick,
   className = '',
-  type = 'button'
+  ...props
 }) {
   const baseClasses = 'font-semibold rounded transition-all duration-300 inline-flex items-center justify-center';
 
@@ -22,9 +21,8 @@ function Button({
 
   return (
     <button
-      type={type}
-      onClick={onClick}
       className={`${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`}
+      {...props}
     >
       {children}
     </button>

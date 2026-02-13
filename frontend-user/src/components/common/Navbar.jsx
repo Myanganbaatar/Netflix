@@ -1,10 +1,18 @@
-import { useState } from 'react';
-import SearchBar from './SearchBar';
+import { useState, useEffect } from 'react';
+import SearchBar from '../movies/SearchBar';
+import CartButton from './CartButton';
 
-function Navbar() {
+function Navbar({ movies, onSearch, cartItems, onRemoveFromCart }) {
   const [isScrolled, setIsScrolled] = useState(false);
-  // Note : useEffect sera vu au TP 03
-  // Pour l'instant, version statique
+  
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    // Ajouter l'écouteur
+    window.addEventListener('scroll', handleScroll);
+    // Nettoyage
+    return () => { window.removeEventListener('scroll', handleScroll);};
+  }, []); // Une seule fois
+
   return (
     <nav className={`fixed top-0 w-full z-50 transition-colors duration-300 ${isScrolled ? 'bg-black' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
       <div className="container mx-auto px-4 py-4">
@@ -33,8 +41,8 @@ function Navbar() {
           </div>
           {/* User Section */}
           <div className="flex items-center space-x-4">
-            <SearchBar />
-
+            <SearchBar movies={movies} onSearch={onSearch} />            
+            <CartButton cartItems={cartItems} onRemove={onRemoveFromCart} />
             {/* User Avatar */}
             <div className="w-8 h-8 bg-primary rounded flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors">
               <span className="text-sm font-bold">U</span>

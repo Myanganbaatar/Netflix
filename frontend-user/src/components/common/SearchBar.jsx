@@ -1,8 +1,20 @@
 import { useState } from 'react';
 
 function SearchBar() {
+  /* Todo : Créez les variables d’état nécessaires et initialisez-les */
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  /* Todo : Créez et codez les fonctions déclenchées à la modification de la zone de texte et à la soumission du 
+  formulaire (affichage dans la console du mot recherché)*/
+  const handleChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Recherche pour:", searchTerm);
+  };
 
   return (
     <div className="relative">
@@ -16,14 +28,23 @@ function SearchBar() {
       </button>
       {/* Input de recherche (apparaît au clic) */}
       {isOpen && (
-        <div className="absolute right-0 top-10 z-50">
-          <input type="text" value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+        <form 
+          onSubmit={handleSubmit}
+          className="absolute right-0 top-10 z-50 p-2 bg-gray-900 border border-gray-700 rounded-lg shadow-xl"
+        >
+          <input 
+            type="text" 
+            value={searchTerm}
+            onChange={handleChange}
             placeholder="Rechercher un film..."
-            className="w-64 px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:border-primary text-white"
+            className="w-64 px-4 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:border-primary text-white mb-2"
             autoFocus
           />
-        </div>
+          <div className="text-xs text-gray-400 px-1">
+             <p>Vous cherchez: <span className="text-white font-medium">{searchTerm}</span></p>
+          </div>
+          <button type="submit" className="hidden">Rechercher</button>
+        </form>
       )}
     </div>
   );
