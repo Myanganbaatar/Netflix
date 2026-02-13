@@ -1,36 +1,36 @@
+import React from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import MovieHero from '../components/movies/MovieHero';
-import MovieList from '../components/movies/MovieList';
+import MovieCarousel from '../components/movies/MovieCarousel';
+import moviesData from '../data/movies.json';
 
-// Données de test temporaires
-const DUMMY_MOVIES = Array.from({ length: 10 }).map((_, i) => ({
-    id: i,
-    title: `Movie Title ${i + 1}`,
-    poster_path: null, 
-    backdrop_path: null,
-    overview: "This is a description of the movie. It is very interesting and you should watch it."
-}));
+const Home = () => {
+    const movies = moviesData;
+    const heroMovie = movies[0];
+    const popularMovies = [...movies]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 5);
 
-const HERO_MOVIE = {
-    id: 999,
-    title: "Featured Movie",
-    overview: "This is the featured movie for the hero section.",
-    backdrop_path: null
-};
+    const genreMovies = movies.filter(movie => movie.genre === 'Science-Fiction').slice(0, 5);
+    const recentMovies = movies.filter(movie => movie.year > 2010);
 
-export default function Home() {
-  return (
-    <div className="min-h-screen bg-netflix-black text-white">
-      <Header />
-      <main>
-        <MovieHero movie={HERO_MOVIE} />
-        <div className="container mx-auto px-4 py-8 -mt-20 relative z-20">
-            <h2 className="text-2xl font-bold mb-4">Trending Now</h2>
-            <MovieList movies={DUMMY_MOVIES} />
+    return (
+        <div className="bg-netflix-black min-h-screen text-white">
+            <Header />
+            
+            <main>
+                <MovieHero movie={heroMovie} />
+                
+                <div className="space-y-8 pb-8 mt-4">
+                    <MovieCarousel title="Films Populaires" movies={popularMovies} />
+                    <MovieCarousel title="Science-Fiction" movies={genreMovies} />
+                    <MovieCarousel title="Films Récents" movies={recentMovies} />
+                </div>
+            </main>
+
+            <Footer />
         </div>
-      </main>
-      <Footer />
-    </div>
-  );
-}
+    );
+};
+export default Home;

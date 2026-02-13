@@ -16,7 +16,6 @@ function Footer() {
   return (
     <footer className="bg-black border-t border-gray-800 mt-16">
       <div className="container mx-auto px-4 py-12">
-        {/* Links Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
@@ -34,7 +33,6 @@ function Footer() {
           ))}
         </div>
 
-        {/* Social Icons */}
         <div className="flex justify-center space-x-6 mb-8">
           {socialIcons.map(({ name, logo }) => (
             <a
@@ -48,10 +46,9 @@ function Footer() {
           ))}
         </div>
 
-        {/* Copyright */}
-        <div className="text-center text-gray-500 text-sm">
-          <p>© 2026 Netflix Clone - Projet pédagogique IUT Informatique - Limoges</p>
-        </div>
+        <p className="text-center text-gray-500 text-sm">
+          © 2026 Netflix Clone - Projet pédagogique IUT Informatique - Limoges
+        </p>
       </div>
     </footer>
   );
