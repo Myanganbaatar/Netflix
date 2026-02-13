@@ -46,9 +46,10 @@ function Footer() {
           ))}
         </div>
 
-        <p className="text-center text-gray-500 text-sm">
-          © 2026 Netflix Clone - Projet pédagogique IUT Informatique - Limoges
-        </p>
+        {/* Copyright */}
+        <div className="text-center text-gray-500 text-sm">
+          <p>© 2026 Netflix Clone - Projet pédagogique IUT Informatique - Limoges</p>
+        </div>
       </div>
     </footer>
   );

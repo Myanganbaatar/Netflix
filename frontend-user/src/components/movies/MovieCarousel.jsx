@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import MovieCard from "./MovieCard";
 
 function MovieCarousel({ title, movies }) {
@@ -6,51 +6,32 @@ function MovieCarousel({ title, movies }) {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const checkScroll = () => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const { scrollLeft, scrollWidth, clientWidth } = container;
-    setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
-  };
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", checkScroll);
-      checkScroll();
-    }
-    return () => container?.removeEventListener("scroll", checkScroll);
-  }, []);
-
   const scroll = (direction) => {
     const container = scrollContainerRef.current;
     if (!container) return;
-
     const scrollAmount = container.clientWidth * 0.8;
     const newScrollPosition =
       direction === "left"
         ? container.scrollLeft - scrollAmount
         : container.scrollLeft + scrollAmount;
-
     container.scrollTo({
       left: newScrollPosition,
       behavior: "smooth",
     });
+    // TODO: Mettre à jour canScrollLeft et canScrollRight
   };
 
   return (
     <section className="py-8 relative group">
       <h2 className="text-2xl md:text-3xl font-bold mb-6 px-4">{title}</h2>
-
+      {/* Bouton Gauche */}
       {canScrollLeft && (
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/80 hover:bg-black p-2 rounded-r opacity-0 group-hover:opacity-100 transition-opacity h-full flex items-center"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/80 hover:bg-black p-2 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <svg
-            className="w-8 h-8 text-white"
+            className="w-8 h-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -64,26 +45,28 @@ function MovieCarousel({ title, movies }) {
           </svg>
         </button>
       )}
-
+      {/* Container scrollable */}
       <div
         ref={scrollContainerRef}
-        className="flex gap-4 overflow-x-auto scrollbar-hide px-4 scroll-smooth"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex gap-4 overflow-x-auto scrollbar-hide px-4"
+        style={{ scrollbarWidth: "none" }}
       >
+        {/* Pour chaque film */}
         {movies.map((movie) => (
-          <div key={movie.id} className="shrink-0 w-[200px] md:w-[240px]">
+          <div key={movie.id} className="shrink-0 w-48">
             <MovieCard movie={movie} />
           </div>
         ))}
+        {/* Fin Pour chaque film */}
       </div>
-
+      {/* Bouton Droite */}
       {canScrollRight && (
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/80 hover:bg-black p-2 rounded-l opacity-0 group-hover:opacity-100 transition-opacity h-full flex items-center"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/80 hover:bg-black p-2 rounded-l opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <svg
-            className="w-8 h-8 text-white"
+            className="w-8 h-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -100,5 +83,4 @@ function MovieCarousel({ title, movies }) {
     </section>
   );
 }
-
 export default MovieCarousel;
