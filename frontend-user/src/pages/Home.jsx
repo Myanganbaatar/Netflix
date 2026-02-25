@@ -4,7 +4,7 @@ import Footer from '../components/layout/Footer';
 import MovieHero from '../components/movies/MovieHero';
 import MovieList from '../components/movies/MovieList';
 import MovieFilter from '../components/movies/MovieFilter';
-import moviesData from '../data/movies.json';
+import moviesData from '../../../data/movies.json';
 
 const Home = () => {
     // 1-Chargez allMovies avec moviesData 

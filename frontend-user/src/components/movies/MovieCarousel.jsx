@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import MovieCard from "./MovieCard";
 
-const MovieCarousel = ({ title, movies }) => {
+function MovieCarousel({ title, movies }) {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);

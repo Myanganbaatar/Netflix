@@ -1,26 +1,69 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 
 function LoginForm() {
-  /* Todo : Créez la variable d’état pour stocker dans un objet le mail et le mot de passe et initialisez-la */
+  const navigate = useNavigate();
+  /* Todo : Créez la variable détat pour stocker dans un objet le mail et le mot de passe et initialisez-la */
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   /* Todo : Créez et codez la fonction déclenchée à la modification du mail ou du mot de passe et celle 
-  déclenchée à la soumission du formulaire (affichage dans la console de l’objet complet)*/
+  déclenchée à la soumission du formulaire (affichage dans la console de lobjet complet)*/
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.email) {
+      newErrors.email = 'L\'email est requis';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Format d\'email invalide';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Le mot de passe est requis';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
+    }
+    return newErrors;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setLoading(true);
+    // Simulation de connexion
+    setTimeout(() => {
+      // Sauvegarde locale de l'utilisateur (temporaire)
+      localStorage.setItem('user', JSON.stringify({
+        email: formData.email,
+        name: formData.email.split('@')[0] 
+      }));
+      
+      setLoading(false);
+      /* TODO : Allez à la page d’accueil */
+      navigate('/');
+    }, 1000);
   };
 
   return (
@@ -33,9 +76,10 @@ function LoginForm() {
           name="email" 
           value={formData.email}
           onChange={handleChange}
-          className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+          className={`bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary ${errors.email ? 'border border-red-500' : ''}`}
           placeholder="email@example.com"
         />
+        {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
       </div>
 
       <div className="flex flex-col gap-1">
@@ -45,14 +89,19 @@ function LoginForm() {
           type="password" 
           value={formData.password}
           onChange={handleChange}
-          className="bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
-          placeholder="••••••••"
+          className={`bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary ${errors.password ? 'border border-red-500' : ''}`}
+          placeholder=""
         />
+        {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
       </div>
 
-      <Button type="submit" variant="primary" className="mt-2">
-        Valider
+      <Button type="submit" variant="primary" className="mt-2" disabled={loading}>
+        {loading ? 'Connexion...' : 'Se connecter'}
       </Button>
+
+      <p className="text-gray-400 text-sm text-center mt-4">
+        Pas encore de compte ? <span onClick={() => navigate('/register')} className="text-red-600 cursor-pointer hover:underline">S'inscrire</span>
+      </p>
     </form>
   );
 }

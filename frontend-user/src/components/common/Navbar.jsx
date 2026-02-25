@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import SearchBar from '../movies/SearchBar';
 import CartButton from './CartButton';
 
@@ -13,29 +14,35 @@ function Navbar({ movies, onSearch, cartItems, onRemoveFromCart }) {
     return () => { window.removeEventListener('scroll', handleScroll);};
   }, []); // Une seule fois
 
+  const navLinkClass = ({ isActive }) => 
+    isActive ? 'text-primary font-bold' : 'text-gray-300 hover:text-white transition-colors';
+
   return (
     <nav className={`fixed top-0 w-full z-50 transition-colors duration-300 ${isScrolled ? 'bg-black' : 'bg-gradient-to-b from-black/80 to-transparent'}`}>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-8">
-            <h1 className="text-primary text-3xl font-bold tracking-tight">
+            <Link to="/" className="text-primary text-3xl font-bold tracking-tight">
               NETFLIX
-            </h1>
+            </Link>
 
             {/* Navigation Links */}
             <ul className="hidden md:flex space-x-6">
               <li>
-                <a href="#" className="hover:text-gray-300 transition-colors">
-                  Accueil</a>
+                <NavLink to="/" className={navLinkClass}>
+                  Accueil
+                </NavLink>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-300 transition-colors">
-                  Films</a>
+                <NavLink to="/movies" className={navLinkClass}>
+                  Films
+                </NavLink>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-300 transition-colors">
-                  Mes locations</a>
+                <NavLink to="/my-rentals" className={navLinkClass}>
+                  Mes locations
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -44,9 +51,9 @@ function Navbar({ movies, onSearch, cartItems, onRemoveFromCart }) {
             <SearchBar movies={movies} onSearch={onSearch} />            
             <CartButton cartItems={cartItems} onRemove={onRemoveFromCart} />
             {/* User Avatar */}
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors">
-              <span className="text-sm font-bold">U</span>
-            </div>
+            <Link to="/login" className="w-8 h-8 bg-primary rounded flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors">
+              <span className="text-sm font-bold text-white">U</span>
+            </Link>
           </div>
         </div>
       </div>

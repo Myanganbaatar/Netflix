@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../common/Button';
 
 // Couleurs par genre
@@ -37,7 +38,8 @@ function MovieDescription({ description }) {
 }
 
 function MovieCard({ movie, onRent, ...props }) {
-  const { title, poster, rating, genre, year, duration, description } = movie;
+  const navigate = useNavigate();
+  const { title, poster, rating, genre, year, duration, description, id } = movie;
   const badgeColor = genreColors[genre] || 'bg-gray-700';
 
   /* Todo : Créez les variables d’état nécessaires et initialisez-les */
@@ -62,9 +64,14 @@ function MovieCard({ movie, onRent, ...props }) {
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/movie/${id}`);
+  };
+
   return (
     <div 
       className="group/card relative overflow-hidden rounded-lg cursor-pointer transition-transform duration-300 hover:scale-105"
+      onClick={handleCardClick}
       {...props}
     >
       {/* Image principale */}
