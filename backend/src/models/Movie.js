@@ -60,6 +60,12 @@ const movieSchema = new mongoose.Schema(
         "Romance",
         "Animation",
         "Documentaire",
+        "Aventure",
+        "Adventure",
+        "Fantastique",
+        "Guerre",
+        "Policier",
+        "Famille"
       ],
     },
     year: {
