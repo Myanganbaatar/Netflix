@@ -99,6 +99,29 @@ const testModels = async () => {
         console.log('\nTest 6: Méthodes statiques');
         const activeRentals = await Rental.getActiveRentals(testUser._id);
         console.log('✅ Locations actives:', activeRentals.length);
+
+        // Test 7: Validations Movie
+        console.log('\nTest 7: Validations Movie (doit échouer)');
+        try {
+            await Movie.create({
+                title: 'Film invalide',
+                duration: 600, // Trop long
+                price: 3.999 // Trop de décimales
+            });
+        } catch (error) {
+            console.log('✅ Validation échouée comme prévu:', error.message);
+        }
+
+        // Test 8: Méthodes avancées Movie
+        console.log('\nTest 8: Méthodes avancées Movie');
+        const sciFiMovies = await Movie.getByGenre("Science-Fiction");
+        console.log("   Films Sci-Fi:", sciFiMovies.length);
+
+        const affordableMovies = await Movie.getByPriceRange(0, 4);
+        console.log("   Films à moins de 4€:", affordableMovies.length);
+
+        const stats = await Movie.getStatsByGenre();
+        console.log("   Statistiques par genre (top 1):", stats[0] || 'Aucune stat');
         
         // Nettoyage
         console.log('\n🧹 Nettoyage...');

@@ -36,12 +36,20 @@ const movieSchema = new mongoose.Schema(
     genre: {
       type: [String],
       required: [true, "Le genre est requis"],
-      validate: {
-        validator: function (v) {
-          return v && v.length > 0;
+      validate: [
+        {
+          validator: function (v) {
+            return v && v.length > 0;
+          },
+          message: "La liste des genres ne peut pas être vide.",
         },
-        message: "La liste des genres ne peut pas être vide.",
-      },
+        {
+          validator: function (v) {
+            return v && v.length <= 5;
+          },
+          message: "Un film ne peut pas avoir plus de 5 genres.",
+        },
+      ],
       enum: [
         "Action",
         "Comédie",
