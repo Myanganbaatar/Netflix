@@ -9,6 +9,7 @@ export default defineConfig({
       allow: ['..']
     },
     port: 3000, 
+    strictPort: true, // Fail if port 3000 is not available
     proxy: { 
       '/api': 'http://localhost:5000' 
     } 

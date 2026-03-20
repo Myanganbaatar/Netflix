@@ -1,8 +1,12 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 
-function CartButton({ cartItems = [], onRemove }) {
+function CartButton() {
+  const { cart, removeFromCart, getCartTotal } = useCart();
   const [showCart, setShowCart] = useState(false);
-  const cartCount = cartItems.length;
+  const navigate = useNavigate();
+  const cartCount = cart.length;
 
   const toggleShow = () => {
     setShowCart(!showCart);
@@ -27,33 +31,42 @@ function CartButton({ cartItems = [], onRemove }) {
 
       {/* Dropdown du panier */}
       {showCart && (
-        <div className="absolute top-10 right-0 mt-2 w-80 bg-gray-900 border border-gray-700 rounded-lg shadow-xl p-4 z-50">
-          <h4 className="text-white font-bold mb-3 border-b border-gray-700 pb-2">Mon Panier</h4>
+        <div className="absolute top-10 right-0 mt-2 w-80 bg-gray-900 border border-gray-700 rounded-lg shadow-xl p-4 z-[100]">
+          <h3 className="text-lg font-bold mb-4 text-white">Votre Panier</h3>
           
-          {cartItems.length > 0 ? (
-            <ul className="space-y-2 max-h-60 overflow-y-auto">
-              {cartItems.map(movie => (
-                <li 
-                  key={movie.id} 
-                  onDoubleClick={() => onRemove(movie.id)}
-                  className="flex justify-between items-center text-sm p-2 hover:bg-gray-800 rounded cursor-pointer select-none group"
-                  title="Double-cliquez pour supprimer"
-                >
-                  <span className="text-gray-300 truncate w-3/4">{movie.title}</span>
-                  <span className="text-primary font-bold">{movie.price} €</span>
-                </li>
-              ))}
-            </ul>
+          {cart.length === 0 ? (
+            <p className="text-gray-400">Votre panier est vide</p>
           ) : (
-            <p className="text-gray-500 text-sm italic">Votre panier est vide.</p>
-          )}
-
-           {cartItems.length > 0 && (
-            <div className="mt-4 pt-2 border-t border-gray-700 flex justify-between items-center">
-               <span className="text-gray-400">Total:</span>
-               <span className="text-white font-bold text-lg">
-                 {cartItems.reduce((acc, curr) => acc + curr.price, 0).toFixed(2)} €
-               </span>
+            <div className="space-y-4">
+              {cart.map(item => (
+                <div key={item.id} className="flex gap-4 items-center">
+                  <img src={item.posterStr || item.poster} alt={item.title} className="w-12 h-16 object-cover rounded" />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-bold truncate text-white">{item.title}</h4>
+                    <p className="text-xs text-gray-400">{item.price} €</p>
+                  </div>
+                  <button 
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-500 hover:text-red-400 ml-2"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+              
+              <div className="border-t border-gray-700 pt-4 mt-4">
+                <div className="flex justify-between font-bold mb-4 text-white">
+                  <span>Total</span>
+                  <span>{getCartTotal().toFixed(2)} €</span>
+                </div>
+                <Link 
+                   to="/cart"
+                   onClick={() => setShowCart(false)}
+                   className="w-full font-semibold rounded transition-all duration-300 inline-flex items-center justify-center bg-primary hover:bg-primary-dark text-white shadow-lg hover:shadow-xl px-6 py-3 text-base"
+                >
+                    Voir le panier
+                </Link>
+              </div>
             </div>
           )}
         </div>

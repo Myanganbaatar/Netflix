@@ -16,21 +16,20 @@ function SearchBar({ movies = [], onSearch }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [wrapperRef]);
+  }, []); // Fix: remove wrapperRef from dependency array
 
   useEffect(() => {
+    if (!movies) return; // Guard clause
     if (searchTerm.length >= 2) {
       // Filtrer les films en fonction du titre et la description
-      const filtered = movies.filter(movie => 
+      const filtered = movies.filter(movie =>  
         movie.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         movie.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
       
-      // Limiter à 5 films
-      setSuggestions(filtered.slice(0, 5));
-      
       // Afficher les suggestions
-      setIsOpen(filtered.length > 0);
+      setSuggestions(filtered.slice(0, 5));
+      setIsOpen(filtered.length > 0); // Correctly set isOpen
     } else {
       // vider la liste des suggestions et masquer le panneau
       setSuggestions([]);

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Button from '../components/common/Button';
+import { useAuth } from '../context/AuthContext';
 
 function Register() {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -46,26 +48,23 @@ function Register() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+    
     setLoading(true);
-    // Simulation d'inscription
-    setTimeout(() => {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-        }),
-      );
-      setLoading(false);
-      navigate('/');
-    }, 1000);
+    const result = await register(formData.name, formData.email, formData.password);
+    
+    setLoading(false);
+    if(result.success) {
+        navigate('/');
+    } else {
+        setErrors({ form: result.error || "Erreur lors de l'inscription" });
+    }
   };
 
   return (

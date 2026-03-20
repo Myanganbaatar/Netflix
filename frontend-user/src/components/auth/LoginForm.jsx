@@ -1,9 +1,11 @@
 ﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import Button from '../common/Button';
 
 function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   /* Todo : Créez la variable détat pour stocker dans un objet le mail et le mot de passe et initialisez-la */
   const [formData, setFormData] = useState({
     email: '',
@@ -53,23 +55,20 @@ function LoginForm() {
 
     setLoading(true);
     // Simulation de connexion
-    setTimeout(() => {
-      // Sauvegarde locale de l'utilisateur (temporaire)
-      localStorage.setItem('user', JSON.stringify({
-        email: formData.email,
-        name: formData.email.split('@')[0] 
-      }));
-      
+    const result = await login(formData.email, formData.password);
+    if (result.success) {
+      navigate("/");
+    } else {
+      setErrors({ api: result.error || "Erreur de connexion" });
       setLoading(false);
-      /* TODO : Allez à la page d’accueil */
-      navigate('/');
-    }, 1000);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-sm mx-auto p-6 bg-black/50 rounded-lg backdrop-blur-sm">
       <h2 className="text-2xl font-bold text-white mb-4">Connexion</h2>
-      
+      {errors.api && <div className="bg-red-500/20 text-red-500 p-3 rounded text-sm mb-4">{errors.api}</div>}
+
       <div className="flex flex-col gap-1">
         <label className="text-sm text-gray-400">Email</label>
         <input 

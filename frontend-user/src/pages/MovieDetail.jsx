@@ -1,15 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import moviesData from '../../../data/movies.json';
+import { movies as moviesData } from '../data/movies';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/layout/Footer';
 import Button from '../components/common/Button';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 function MovieDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  const { user } = useAuth();
+  const { addToCart, isInCart, rentMovie, isRented, getRentalByMovieId } = useCart();
+
+  const handleRent = () => {
+    if (!user) {
+        navigate('/login');
+        return;
+    }
+    const result = rentMovie(movie);
+    if(result.success) {
+        navigate('/my-rentals');
+    }
+  };
+
+  const handleAddToCart = () => {
+    addToCart(movie);
+  };
 
   useEffect(() => {
     // Simulation d'un appel API
@@ -96,12 +116,46 @@ function MovieDetail() {
                         <p className="text-gray-300 leading-relaxed max-w-2xl text-lg">{movie.description}</p>
                     </div>
 
-                    <Button size="lg" className="mb-8 bg-red-600 hover:bg-red-700 text-white px-8">
-                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                        </svg>
-                        Louer pour {movie.price}€
-                    </Button>
+                    <div className="flex gap-4 mb-8">
+                        {isRented(movie.id) ? (
+                            <div className="bg-green-600/20 border border-green-500 text-green-400 px-6 py-4 rounded-lg flex items-center gap-3 w-full md:w-auto">
+                                <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div>
+                                    <p className="font-bold text-lg">Film loué</p>
+                                    <p className="text-sm opacity-80">
+                                        Disponible jusqu'au {new Date(getRentalByMovieId(movie.id)?.expiryDate).toLocaleDateString()}
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <Button size="lg" onClick={handleRent} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                                    </svg>
+                                    Louer pour {movie.price}€
+                                </Button>
+                                
+                                {isInCart(movie.id) ? (
+                                    <Button size="lg" className="bg-gray-700 text-white px-8 border border-white">
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        Dans le panier
+                                    </Button>
+                                ) : (
+                                    <Button size="lg" onClick={handleAddToCart} className="bg-gray-800 hover:bg-gray-700 text-white px-8 border border-gray-600">
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                        Ajouter au panier
+                                    </Button>
+                                )}
+                            </>
+                        )}
+                    </div>
                     
                      {/* Info Box */}
                     <div className="bg-gray-900/80 p-6 rounded-lg backdrop-blur-sm max-w-2xl border border-gray-800">
